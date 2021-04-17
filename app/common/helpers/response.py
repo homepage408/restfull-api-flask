@@ -1,4 +1,4 @@
-from flask import jsonify, make_response
+from flask import jsonify
 
 
 def success(values, message):
@@ -7,7 +7,7 @@ def success(values, message):
         "message": message
     }
 
-    return make_response(jsonify(res)), 200
+    return res
 
 
 def badRequest(values, message):
@@ -15,7 +15,7 @@ def badRequest(values, message):
         "data": values,
         "message": message
     }
-    return make_response(jsonify(res)), 400
+    return res
 
 
 def tokenSuccess(data, values, message="Success"):
@@ -24,4 +24,4 @@ def tokenSuccess(data, values, message="Success"):
         "payload": values,
         "message": message
     }
-    return make_response(jsonify(res)), 200
+    return res
