@@ -4,3 +4,4 @@ from app.controller import userController
 
 
 api.add_resource(userController.controlUser, '/user')
+# api.add_resource(userController.controlUser, '/user/<string:email>')

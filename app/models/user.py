@@ -48,7 +48,7 @@ class User(db.Model):
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('name', 'email', 'password', 'role')
+        fields = ('name', 'email', 'role.name', 'created_at')
 
 
 user_schema = UserSchema()

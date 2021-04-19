@@ -1,6 +1,7 @@
 from app.models.user import User
 from app import app, db
 from kanpai import Kanpai
+from app.models.user import User, UserSchema, users_schema, user_schema
 from app.common.helpers import response
 from app.common.middleware import auth, kanpai
 from app.common.middleware.kanpai import userRegister
@@ -27,9 +28,24 @@ class controlUser(Resource):
             created_user.setPassword(context['password'])
             db.session.add(created_user)
             db.session.commit()
-            return response.success(created_user.fetchall(), 'success'), 201
+            # print(user_schema.dump(created_user))
+            return response.success(user_schema.dump(created_user), 'success'), 201
         except Exception as e:
             return response.badRequest(e, 'error'), 500
 
     def get(self):
-        return response.success('', '')
+        try:
+            data = User.query.all()
+            return response.success(users_schema.dump(data), 'success')
+        except Exception as e:
+            return response.badRequest(e, 'error')
+
+    def get(self, email):
+        try:
+            data = User.query.filter_by(email=email).first()
+            # print(data)
+            dataUser = user_schema.dump(data)
+            print(dataUser)
+            return response.success(dataUser, '')
+        except Exception as e:
+            return response.badRequest(e, 'error')
