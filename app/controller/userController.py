@@ -16,7 +16,8 @@ class controlUser(Resource):
         try:
             context = request.json
             validation_result = userRegister.validate(request.json)
-            userEmail = User.query.filter_by(email=context['email']).first()
+            userEmail = User.query.filter_by(
+                email=context['email']).first()
             if userEmail != None:
                 return response.badRequest(userEmail.email, 'email must be unique'), 400
 
@@ -28,24 +29,19 @@ class controlUser(Resource):
             created_user.setPassword(context['password'])
             db.session.add(created_user)
             db.session.commit()
-            # print(user_schema.dump(created_user))
             return response.success(user_schema.dump(created_user), 'success'), 201
         except Exception as e:
             return response.badRequest(e, 'error'), 500
 
-    def get(self):
+    # @jwt_required()
+    def get(self, email=None):
         try:
-            data = User.query.all()
-            return response.success(users_schema.dump(data), 'success')
-        except Exception as e:
-            return response.badRequest(e, 'error')
-
-    def get(self, email):
-        try:
-            data = User.query.filter_by(email=email).first()
-            # print(data)
-            dataUser = user_schema.dump(data)
-            print(dataUser)
-            return response.success(dataUser, '')
+            if email is None:
+                data = User.query.all()
+                return response.success(users_schema.dump(data), 'success')
+            else:
+                dataFilter = User.query.filter_by(email=email).first()
+                dataUser = user_schema.dump(dataFilter)
+                return response.success(dataUser, '')
         except Exception as e:
             return response.badRequest(e, 'error')
