@@ -36,31 +36,29 @@ class TaskController(Resource):
         except Exception as e:
             return response.badRequest(e, 'error')
 
-    def put(self,id):
+    def put(self, id):
         try:
             context = request.json
             data = Task.query.filter_by(id=id).first()
             if data is None:
-                return response.badRequest([],"Data doens't exist")
+                return response.badRequest([], "Data doens't exist")
             else:
                 data.user_id = context['user_id']
                 data.title = context['title']
                 data.description = context['description']
                 data.duedate = context['duedate']
                 data.status = context['status']
-                
+
                 db.session.commit()
                 return response.success(task_schema.dump(data), 'success')
         except Exception as e:
             return response.badRequest(e, 'error')
 
-
-
     def delete(self, id):
         try:
             data = Task.query.filter_by(id=id).first()
             if data is None:
-                return response.badRequest([],"Data doens't exist")
+                return response.badRequest([], "Data doens't exist")
             else:
                 db.session.delete(data)
                 db.session.commit()

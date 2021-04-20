@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -13,6 +13,13 @@ ma = Marshmallow(app)
 Migrate = Migrate(app, db)
 jwt = JWTManager(app)
 api = Api(app)
+
+@app.route('/')
+def index():
+    return jsonify({
+        "Hello": "World!"
+    })
+
 
 from app.models import user, task, coment
 from app.routes import user, task, coment
