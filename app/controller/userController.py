@@ -38,20 +38,56 @@ class controlUser(Resource):
             return response.badRequest(e, 'error'), 500
 
     @jwt_required()
-    def get(self, email=None):
+    def get(self, id=None):
         try:
             user = get_jwt_identity()
             if user.get('role.name') == "supervisor":
-                print("Supervisor if")
-                if email is None:
+                if id is None:
                     data = User.query.all()
                     return response.success(users_schema.dump(data), 'success')
                 else:
-                    dataFilter = User.query.filter_by(email=email).first()
+                    dataFilter = User.query.filter_by(id=id).first()
+                    if dataFilter is None:
+                        return response.badRequest([], "Data doens't exist")
                     dataUser = user_schema.dump(dataFilter)
                     return response.success(dataUser, '')
             else:
-                # print("Bukan superuser")
-                return response.badRequest([],'Unauthorization'), 401
+                return response.badRequest([], 'Unauthorization'), 401
+        except Exception as e:
+            return response.badRequest(e, 'error')
+
+    def put(self, id):
+        try:
+            context = request.json
+            data = User.query.filter_by(id=id).first()
+            if data is None:
+                return response.badRequest([], "Data doesn't exist")
+            else:
+                dataEmail = User.query.filter_by(
+                    email=context['email']).first()
+                if dataEmail is not None:
+                    return response.badRequest(context['email'], "email is already in use")
+
+                data.name = context['name']
+                data.email = context['email']
+                data.role = context['role']
+
+                db.session.commit()
+
+                print(user_schema.dump(data))
+                return response.success(user_schema.dump(data), 'success')
+        except Exception as e:
+            return response.badRequest(e, 'error')
+
+    def delete(self, id):
+        try:
+            data = User.query.filter_by(id=id).first()
+            # print(data.email)
+            if data is None:
+                return response.badRequest([], "Data doesn't exist")
+            else:
+                db.session.delete(data)
+                db.session.commit()
+                return response.success(user_schema.dump(data), 'success delete')
         except Exception as e:
             return response.badRequest(e, 'error')

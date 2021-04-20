@@ -5,4 +5,4 @@ from app.controller import taskController
 api.add_resource(taskController.TaskController, '/task',
                  methods=['POST', 'GET'], endpoint='task')
 api.add_resource(taskController.TaskController, '/task/<int:id>',
-                 methods=['DELETE','PUT'], endpoint='task-edit')
+                 methods=['DELETE','PUT','GET'], endpoint='task-edit')

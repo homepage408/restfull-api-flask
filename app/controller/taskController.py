@@ -29,10 +29,17 @@ class TaskController(Resource):
             return response.badRequest(e, 'error')
 
     @jwt_required()
-    def get(self,):
+    def get(self, id=None):
         try:
-            data = Task.query.all()
-            return response.success(tasks_schema.dump(data), 'success')
+            if id is None:
+                data = Task.query.all()
+                return response.success(tasks_schema.dump(data), 'success')
+            else:
+                data = Task.query.filter_by(id=id).first()
+                if data is None:
+                    return response.badRequest([], "Data doens't exist")
+
+                return response.success(task_schema.dump(data), 'success')
         except Exception as e:
             return response.badRequest(e, 'error')
 
