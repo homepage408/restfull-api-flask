@@ -16,8 +16,7 @@ class AuthController(Resource):
         try:
             context = request.json
             data = User.query.filter_by(email=context['email']).first()
-
-            if not data:
+            if data is None:
                 return response.badRequest("", "Email doens't exis")
 
             if not data.checkPassword(context['password']):
