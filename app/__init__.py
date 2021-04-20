@@ -15,4 +15,4 @@ jwt = JWTManager(app)
 api = Api(app)
 
 from app.models import user, task, coment
-from app.routes import user
+from app.routes import user, task, coment

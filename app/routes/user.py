@@ -7,4 +7,5 @@ api.add_resource(userController.controlUser, '/user',
                  methods=['GET', 'POST'], endpoint='users')
 api.add_resource(userController.controlUser,
                  '/user/<email>', methods=['GET'], endpoint='user')
-api.add_resource(authController.AuthController, '/login', methods=['POST'])
+api.add_resource(authController.AuthController, '/login',
+                 methods=['POST'], endpoint='login')

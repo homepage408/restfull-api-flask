@@ -12,3 +12,11 @@ userLogin = Kanpai.Object({
     "email": Kanpai.Email().required(),
     "password": Kanpai.String().trim().required()
 })
+
+inputTask = Kanpai.Object({
+    "user_id": Kanpai.Number().required(),
+    "title": Kanpai.String().required(),
+    "description": Kanpai.String().required(),
+    "duedate": Kanpai.String().required(),
+    "status": Kanpai.String().required()
+})

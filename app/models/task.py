@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 from app.models import user
 from datetime import datetime
 import enum
@@ -28,3 +28,12 @@ class Task(db.Model):
 
     def __repr__(self):
         return f'<title {self.title}>'
+
+
+class TaskSchema(ma.Schema):
+    class Meta:
+        fields = ('id','user_id', 'title', 'description', 'duedate', 'status.name')
+
+
+task_schema = TaskSchema()
+tasks_schema = TaskSchema(many=True)

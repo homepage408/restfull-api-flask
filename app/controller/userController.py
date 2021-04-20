@@ -16,6 +16,9 @@ class controlUser(Resource):
         try:
             context = request.json
             validation_result = userRegister.validate(request.json)
+            if validation_result.get('success', False) is False:
+                return response.badRequest(validation_result.get('data'), validation_result.get('error'))
+
             userEmail = User.query.filter_by(
                 email=context['email']).first()
             if userEmail != None:
@@ -29,19 +32,26 @@ class controlUser(Resource):
             created_user.setPassword(context['password'])
             db.session.add(created_user)
             db.session.commit()
+            print(user_schema.dump(created_user))
             return response.success(user_schema.dump(created_user), 'success'), 201
         except Exception as e:
             return response.badRequest(e, 'error'), 500
 
-    # @jwt_required()
+    @jwt_required()
     def get(self, email=None):
         try:
-            if email is None:
-                data = User.query.all()
-                return response.success(users_schema.dump(data), 'success')
+            user = get_jwt_identity()
+            if user.get('role.name') == "supervisor":
+                print("Supervisor if")
+                if email is None:
+                    data = User.query.all()
+                    return response.success(users_schema.dump(data), 'success')
+                else:
+                    dataFilter = User.query.filter_by(email=email).first()
+                    dataUser = user_schema.dump(dataFilter)
+                    return response.success(dataUser, '')
             else:
-                dataFilter = User.query.filter_by(email=email).first()
-                dataUser = user_schema.dump(dataFilter)
-                return response.success(dataUser, '')
+                # print("Bukan superuser")
+                return response.badRequest([],'Unauthorization'), 401
         except Exception as e:
             return response.badRequest(e, 'error')

@@ -37,15 +37,6 @@ class User(db.Model):
     def checkPassword(self, password):
         return check_password_hash(self.password, password)
 
-    # def __init__(self, name, email, password, role, created_at, update_at):
-    #     self.name = name
-    #     self.email = email
-    #     self.password = password
-    #     self.role = role
-    #     self.created_at = created_at
-    #     self.update_at = update_at
-
-
 class UserSchema(ma.Schema):
     class Meta:
         fields = ('name', 'email', 'role.name', 'created_at')
