@@ -15,12 +15,10 @@ class role_enum(enum.Enum):
 
 
 class User(db.Model):
-    __tablename__ = 'user'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(60), index=True, unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    role = db.Column(Enum(role_enum))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     update_at = db.Column(db.DateTime, default=datetime.utcnow)
     # task = relationship('Task', backref='user',
@@ -41,6 +39,10 @@ class UserSchema(ma.Schema):
     class Meta:
         fields = ('id','name', 'email', 'role.name', 'created_at')
 
+
+class UserForNestedSchema(ma.ModelSchema):
+    class Meta:
+        model = User
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
